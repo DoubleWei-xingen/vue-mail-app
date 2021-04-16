@@ -1,32 +1,52 @@
 <template>
   <div id="app">
-    <div id="nav">
-      <router-link to="/">Home</router-link> |
-      <router-link to="/about">About</router-link>
-    </div>
-    <router-view/>
+    <transition :name="transitionName" :mode="mode ? 'out-in' :'in-out'">
+       <router-view class="view" ></router-view>
+    </transition>
   </div>
 </template>
+<script>
 
-<style lang="less">
-#app {
-  font-family: Avenir, Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
+export default {
+  created() {
+    const counterMap = JSON.parse(localStorage.getItem('goods')) || {};
+    this.$store.commit('setcounterMap', counterMap);
+  },
+  data() {
+    return {
+      transitionName: 'slide-left',
+      mode: true,
+    };
+  },
+  watch: {
+    $route(to, from) {
+      if (to.name === 'Search' && from.name === 'Classify') {
+        this.mode = true;
+      } else if (to.name === 'Search' && from.name === 'Classify') {
+        this.mode = false;
+      }
+    },
+  },
+};
+</script>
+<style lang="less" scoped>
+#app{
+  width: 100%;
+  height: 100vh;
+}
+ .view {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100vh;
+  transition: all .2s linear;
+}
+.slide-left-enter {
+  transform: translate(100%, 0);
 }
 
-#nav {
-  padding: 30px;
-
-  a {
-    font-weight: bold;
-    color: #2c3e50;
-
-    &.router-link-exact-active {
-      color: #42b983;
-    }
-  }
+.slide-right-leave-to {
+  transform: translate(100%, 0);
 }
 </style>
